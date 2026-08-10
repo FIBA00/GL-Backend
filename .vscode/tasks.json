@@ -1,0 +1,30 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build and Sync Frontend",
+			"type": "shell",
+			"command": "npm run build:local && node -e \"const fs = require('fs'); fs.rmSync('../backend/dist', { recursive: true, force: true }); fs.cpSync('dist', '../backend/dist', { recursive: true }); console.log('Successfully synced dist to backend!');\"",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Build and Sync Frontend (Production)",
+			"type": "shell",
+			"command": "npm run build && node -e \"const fs = require('fs'); fs.rmSync('../backend/dist', { recursive: true, force: true }); fs.cpSync('dist', '../backend/dist', { recursive: true }); console.log('Successfully synced production dist to backend!');\"",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"group": {
+				"kind": "build"
+			},
+			"problemMatcher": []
+		}
+	]
+}
