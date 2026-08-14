@@ -3,7 +3,6 @@ __pycache__/
 *.py[codz]
 *$py.class
 /restfox_test
-*.docs/
 node_modules/
 .pdf
 # C extensions

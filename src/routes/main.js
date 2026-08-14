@@ -15,6 +15,7 @@ export default function RegisterRoutes(app) {
   app.use("/api/products", ProductGraphQLRoute);
   app.use("/api/shopCategory", ShopCategoryRoute);
   app.use("/api/productCategory", ProductCategoryRoute);
+  
   app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError || err?.message?.includes("Only image files")) {
     return res.status(400).json({ success: false, message: err.message });
