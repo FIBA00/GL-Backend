@@ -187,4 +187,7 @@ describe("DELETE /api/shops/:id ownership", function describeDeleteShopOwnership
               .set(authHeaderFor(owner));
             expect(res.status).toBe(200);
           });
-        });
+
+  
+});
+        
