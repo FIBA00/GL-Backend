@@ -35,14 +35,17 @@ describe("ValidaeStockAvailablity", function describeStockValidation() {
 			return r.status === 201;
 		}).length;
 		expect(successCount).toBe(1);
-    });
-    it("locks in the unit price at order time, unaffected by later price changes", async function priceSnapShotTest() {
-        const product = await createTestProduct(shop._id, { price: 1000 });
-        const order = await placeOrder(buyer, shop, [ {
-            product: product:_id, quantity: 5
-        } ]) 
-        await ProductModel.findByIdAndUpdate(product._id, { price: 1500 }) // price moves after order placed
-        const reloaded = await OrdersModel.findById(order._id);
-        expect(reloaded.products[ 0 ].unitPrice).toBe(1000); // 1500
-    })
+	});
+	it("locks in the unit price at order time, unaffected by later price changes", async function priceSnapShotTest() {
+		const product = await createTestProduct(shop._id, { price: 1000 });
+		const order = await placeOrder(buyer, shop, [
+			{
+				product: product._id,
+				quantity: 5,
+			},
+		]);
+		await ProductModel.findByIdAndUpdate(product._id, { price: 1500 }); // price moves after order placed
+		const reloaded = await OrdersModel.findById(order._id);
+		expect(reloaded.products[0].unitPrice).toBe(1000); // 1500
+	});
 });
