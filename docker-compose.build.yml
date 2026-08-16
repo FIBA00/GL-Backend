@@ -1,0 +1,42 @@
+services:
+
+  backend:
+    image: fraolbmax/guzolink-backend:latest
+    container_name: guzolink-backend
+    restart: unless-stopped
+    volumes:
+      - uploads_data:/app/uploads
+    env_file:
+      - /home/fraol/secrets/guzolink-app.env
+
+    depends_on:
+      - mongodb
+
+    ports:
+      - "127.0.0.1:5000:5000"
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  mongodb:
+    image: mongo:latest
+    container_name: guzolink-mongodb
+    restart: unless-stopped
+
+    volumes:
+      - mongodb_data:/data/db
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mongodb_data:
+  uploads_data:
+  redis_data:

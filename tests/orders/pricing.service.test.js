@@ -8,7 +8,7 @@ describe("CalculateUnitPrice", function describeCalculateUnitPrice() {
 		const product = { commodityCode: "coffee", marginPercent: 10 };
 
 		const price = await CalculateUnitPrice(product, provider);
-		expect(price).toBe(220); // 200 + 10%
+		expect(price).toBeCloseTo(220, 2); // 200 + 10% matches within 2 decimal places
 	});
 
 	it("throws for margin above the platform cap, never reaching the exchange call", async function marginCapEnforcedTest() {

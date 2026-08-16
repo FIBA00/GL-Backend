@@ -5,7 +5,8 @@ import {
 	ValidateStockAvailability,
 } from "../../src/services/order.service.js";
 
-describe("ValidaeStockAvailablity", function describeStockValidation() {
+import { createTestProduct } from "../helpers/product.helper.js";
+describe("ValidateStockAvailablity", function describeStockValidation() {
 	it("rejects an order when requested quantity exceeds available stock", function insufficientStockTest() {
 		const product = { stock: 10, price: 500 };
 		const result = ValidateStockAvailability(product, 15);
@@ -19,8 +20,8 @@ describe("ValidaeStockAvailablity", function describeStockValidation() {
 	});
 
 	it("does not oversell when two orders race for the same stock", async function concurrentOrderReaceTest() {
-		const shop = await createTestShop(merchantOwner._id);
-		const product = await createTestProduct(shop._id, { stock: 10 });
+		const shop = await createTestShop(ownerUser._id);
+		const product = await createTestProduct(shop._id, { stock: 20 });
 		const [resA, resB] = await Promise.all([
 			request(App).post("/api/orders").set(authHeaderFor(buyerA)).send({
 				productId: product._id,
@@ -36,6 +37,7 @@ describe("ValidaeStockAvailablity", function describeStockValidation() {
 		}).length;
 		expect(successCount).toBe(1);
 	});
+
 	it("locks in the unit price at order time, unaffected by later price changes", async function priceSnapShotTest() {
 		const product = await createTestProduct(shop._id, { price: 1000 });
 		const order = await placeOrder(buyer, shop, [

@@ -66,6 +66,7 @@ const ordersSchema = new mongoose.Schema(
 	},
 	{ timestamps: true },
 );
-
+ordersSchema.index({ buyer: 1, createdAt: -1 }); // "my orders" list, newest first
+ordersSchema.index({ shop: 1, createdAt: -1 }); // "orders for my shop" list
 const OrdersModel = mongoose.model("Order", ordersSchema);
 export default OrdersModel;

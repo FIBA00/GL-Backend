@@ -60,6 +60,8 @@ const ProductSchema = new mongoose.Schema(
 		timestamps: true,
 	},
 );
+ProductSchema.index({ shop: 1 }); // GetMerchantShops-style lookups, and PlaceOrder's shop-ownership check
+ProductSchema.index({ commodityCode: 1 }); // future: browsing/filtering by commodity
 
 const ProductModel = mongoose.model("Product", ProductSchema);
 export default ProductModel;
