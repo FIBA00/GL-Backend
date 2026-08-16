@@ -28,6 +28,7 @@ services:
 
     volumes:
       - mongodb_data:/data/db
+    
   redis:
     image: redis:7-alpine
     restart: unless-stopped

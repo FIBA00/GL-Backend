@@ -1,39 +1,52 @@
 services:
-  
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    image: fraolbmax/guzolink-backend:latest
-    container_name: guzolink-backend
-    restart: unless-stopped
-    volumes:
-      - uploads_data:/app/uploads
-    env_file:
-      - ./backend/.env.production
+    backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        image: fraolbmax/guzolink-backend:latest
+        container_name: guzolink-backend
+        restart: unless-stopped
+        volumes:
+            - uploads_data:/app/uploads
+        env_file:
+            - ./backend/.env.production
 
-    depends_on:
-      - mongodb
+        depends_on:
+            - mongodb
 
-    ports:
-      - "127.0.0.1:5000:5000"
+        ports:
+            - "127.0.0.1:5000:5000"
 
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5000/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "wget",
+                    "--spider",
+                    "-q",
+                    "http://localhost:5000/health",
+                ]
+            interval: 30s
+            timeout: 5s
+            retries: 3
 
+    mongodb:
+        image: mongo:latest
+        container_name: guzolink-mongodb
+        restart: unless-stopped
 
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:6379:6379"
-    volumes:
-      - redis_data:/data
+        volumes:
+            - mongodb_data:/data/db
+
+    redis:
+        image: redis:7-alpine
+        restart: unless-stopped
+        ports:
+            - "127.0.0.1:6379:6379"
+        volumes:
+            - redis_data:/data
 
 volumes:
-  mongodb_data:
-  uploads_data:
-  redis_data:
+    mongodb_data:
+    uploads_data:
+    redis_data:

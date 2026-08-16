@@ -1,9 +1,9 @@
-import UserRoute from "./user.route.js";
+import UserRoute from "./user.routes.js";
 import OrderRoute from "./orders.routes.js";
-import ShopRoute from "./shops.route.js";
-import ShopCategoryRoute from "./shopCategory.route.js";
-import ProductCategoryRoute from "./productCategory.route.js";
-import ProductGraphQLRoute from "./product.graphql.route.js"; // the file above
+import ShopRoute from "./shops.routes.js";
+import ShopCategoryRoute from "./shopCategory.routes.js";
+import ProductCategoryRoute from "./productCategory.routes.js";
+import ProductGraphQLRoute from "./product.graphql.routes.js"; // the file above
 
 import multer from "multer"
 
