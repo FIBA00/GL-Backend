@@ -2,7 +2,7 @@ import request from "supertest";
 import App from "../../app.js";
 import { connectTestDB, clearTestDB, closeTestDB } from "../helpers/db.helper.js";
 import { createTestUser, authHeaderFor } from "../helpers/auth.helper.js";
-import { createTestShop } from "../helpers/shop.helper.js";
+import { createTestShop } from "../helpers/shops.helper.js";
 import { createTestProduct } from "../helpers/product.helper.js";
 
 beforeAll(async function setupDatabase() {
