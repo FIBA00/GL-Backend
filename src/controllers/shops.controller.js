@@ -43,8 +43,9 @@ export async function CreateMerchantShop(req, res) {
     });
 
     return res
-      .status(200)
+      .status(201)
       .json({ success: true, message: "Shop created successfully", shop });
+
   } catch (error) {
     console.log("error occurred while creating shop: ", error);
     res.status(500).json({ message: error.message });
@@ -58,19 +59,11 @@ export async function GetMerchantShops(req, res) {
       "category",
       "name",
     );
-
-    if (!shops || shops.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No shops found for this user please add new shop",
-        shops: [],
-      });
-    }
-    console.log(shops[0].posterImage, "posterImage path for shop creation");
-
-    return res
-      .status(200)
-      .json({ success: true, message: "Shops retrieved successfully", shops });
+    return res.status(200).json({
+      success: true,
+      message: shops.length === 0 ? "No shops found for this user" : "Shops retrieved successfully",
+      shops,
+    });
   } catch (error) {
     console.log("error occurred while getting all categories", error);
     return res.status(404).json({
@@ -235,13 +228,23 @@ export async function UpdateMerchantShop(req, res) {
       });
     }
 
-    const update = { name, description, location, contact, category };
-
+    // FIX: only set fields actually present in the request body, instead
+    // of building the update object from possibly-undefined destructured
+    // values. Previously relied on the MongoDB driver silently stripping
+    // undefined keys — now explicit, so partial updates are guaranteed
+    // not to touch fields the client didn't send.
+    const update = {};
+    if (name !== undefined) update.name = name;
+    if (description !== undefined) update.description = description;
+    if (location !== undefined) update.location = location;
+    if (contact !== undefined) update.contact = contact;
+    if (category !== undefined) update.category = category;
     if (posterImage !== undefined) update.posterImage = posterImage;
 
     const updatedShop = await Shop.findOneAndUpdate({ _id: shopId }, update, {
       returnDocument: "after",
     });
+
 
     return res.status(200).json({
       success: true,

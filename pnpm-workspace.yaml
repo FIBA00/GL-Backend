@@ -1,2 +1,3 @@
 allowBuilds:
   bcrypt: false
+  mongodb-memory-server: false

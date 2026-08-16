@@ -1,0 +1,11 @@
+{
+    "_type": "request",
+    "method": "DELETE",
+    "body": {
+        "mimeType": "No Body"
+    },
+    "url": "http://localhost:8000/api/user",
+    "sortOrder": 3,
+    "parameters": [],
+    "pathParameters": []
+}
