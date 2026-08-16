@@ -1,3 +1,4 @@
+//src/middlewares/auth.middleware.js
 import "../configs/env.config.js";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user.model.js";
