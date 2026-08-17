@@ -1,18 +1,23 @@
 services:
     backend:
+        # build new image for backend
         build:
-            context: ./backend
+            context: .
             dockerfile: Dockerfile
-        image: fraolbmax/guzolink-backend:latest
+        # if you want to pull from docker hub un comment the followoing
+        # image: fraolbmax/guzolink-backend:latest
         container_name: guzolink-backend
         restart: unless-stopped
         volumes:
             - uploads_data:/app/uploads
         env_file:
-            - ./backend/.env.production
+            - ./.env.production
 
         depends_on:
-            - mongodb
+            mongodb:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
 
         ports:
             - "127.0.0.1:5000:5000"
@@ -33,6 +38,13 @@ services:
     mongodb:
         image: mongo:latest
         container_name: guzolink-mongodb
+        healthcheck:
+            test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 10s
+
         restart: unless-stopped
 
         volumes:
@@ -41,10 +53,15 @@ services:
     redis:
         image: redis:7-alpine
         restart: unless-stopped
-        ports:
-            - "127.0.0.1:6379:6379"
         volumes:
             - redis_data:/data
+
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 3s
+            retries: 10
+            start_period: 5s
 
 volumes:
     mongodb_data:

@@ -1,3 +1,6 @@
 allowBuilds:
-  bcrypt: false
-  mongodb-memory-server: false
+  bcrypt: true
+  mongodb-memory-server: true
+
+onlyBuiltDependencies:
+  - bcrypt

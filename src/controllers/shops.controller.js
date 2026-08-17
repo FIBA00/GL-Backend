@@ -1,6 +1,91 @@
 import Shop from "../models/shop.model.js";
 import ShopCategory from "../models/shopCategory.model.js";
 import { publicPathFor } from "../middlewares/upload.middleware.js";
+import {getCachedShopListing} from "../services/cache/shopListing.cache.js"
+import redisClient from "../configs/redis.config.js"
+
+export async function GetAllShops(req, res) {
+	try {
+		// GET /shops/all?page=1&limit=10
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+		const category = req.query.category;
+
+		const result = await getCachedShopListing(
+			{ page, limit, category },
+			redisClient,
+		);
+
+		
+		return res.status(200).json({
+			success: true,
+			message:
+				result.shops.length === 0
+					? "No shops found"
+					: "Shops retrieved successfully",
+			data: result.shops,
+			pagination: result.pagination,
+		});
+	} catch (error) {
+		console.error("Error getting shops:", error);
+		return res.status(500).json({ success: false, message: error.message });
+	}
+}
+
+
+export async function GetMerchantShops(req, res) {
+	try {
+		const userid = req.user.id;
+		const shops = await Shop.find({ owner: userid }).populate(
+			"category",
+			"name",
+		);
+		return res.status(200).json({
+			success: true,
+			message:
+				shops.length === 0
+					? "No shops found for this user"
+					: "Shops retrieved successfully",
+			shops,
+		});
+	} catch (error) {
+		console.log("error occurred while getting all categories", error);
+		return res.status(404).json({
+			success: false,
+			message: error.message,
+		});
+	}
+}
+
+
+export async function GetMerchantShopDetails(req, res) {
+	try {
+		const { id } = req.params;
+		const existingShop = await Shop.findOne({ _id: id }).populate(
+			"category",
+			"name",
+		);
+
+		if (!existingShop) {
+			return res.status(400).json({
+				success: false,
+				message: "Shop not found with given id ",
+			});
+		}
+
+		return res.status(200).json({
+			success: true,
+			message: "Shop detials retrieved successfully",
+			shop: existingShop,
+		});
+	} catch (error) {
+		console.log("error occurred while getting all categories", error);
+		return res.status(404).json({
+			success: false,
+			message: error.message,
+		});
+	}
+}
 
 export async function CreateMerchantShop(req, res) {
 	try {
@@ -55,93 +140,6 @@ export async function CreateMerchantShop(req, res) {
 	}
 }
 
-export async function GetMerchantShops(req, res) {
-	try {
-		const userid = req.user.id;
-		const shops = await Shop.find({ owner: userid }).populate(
-			"category",
-			"name",
-		);
-		return res.status(200).json({
-			success: true,
-			message:
-				shops.length === 0
-					? "No shops found for this user"
-					: "Shops retrieved successfully",
-			shops,
-		});
-	} catch (error) {
-		console.log("error occurred while getting all categories", error);
-		return res.status(404).json({
-			success: false,
-			message: error.message,
-		});
-	}
-}
-
-export async function GetAllShops(req, res) {
-	try {
-		// GET /shops/all?page=1&limit=10
-		const page = parseInt(req.query.page) || 1;
-		const limit = parseInt(req.query.limit) || 10;
-		const category = req.query.category;
-
-		const result = await getCachedShopListing(
-			{ page, limit, category },
-			redisClient,
-		);
-
-		console.log(
-			"Total shops:",
-			totalShops,
-			"Current page:",
-			page,
-			"Limit:",
-			limit,
-		);
-		return res.status(200).json({
-			success: true,
-			message:
-				result.shops.length === 0
-					? "No shops found"
-					: "Shops retrieved successfully",
-			data: result.shops,
-			pagination: result.pagination,
-		});
-	} catch (error) {
-		console.error("Error getting shops:", error);
-		return res.status(500).json({ success: false, message: error.message });
-	}
-}
-
-export async function GetMerchantShopDetails(req, res) {
-	try {
-		const { id } = req.params;
-		const existingShop = await Shop.findOne({ _id: id }).populate(
-			"category",
-			"name",
-		);
-
-		if (!existingShop) {
-			return res.status(400).json({
-				success: false,
-				message: "Shop not found with given id ",
-			});
-		}
-
-		return res.status(200).json({
-			success: true,
-			message: "Shop detials retrieved successfully",
-			shop: existingShop,
-		});
-	} catch (error) {
-		console.log("error occurred while getting all categories", error);
-		return res.status(404).json({
-			success: false,
-			message: error.message,
-		});
-	}
-}
 
 export async function DeleteMerchantShop(req, res) {
 	try {

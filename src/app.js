@@ -4,9 +4,9 @@ import morgan from "morgan";
 import path from "path";
 
 // internal imports
-import "./src/configs/env.config.js";
-import StartDatabase from "./src/configs/database.config.js";
-import RegisterRoutes from "./src/routes/main.routes.js";
+import "./configs/env.config.js";
+import StartDatabase from "./configs/database.config.js";
+import RegisterRoutes from "./routes/main.routes.js";
 
 
 const App = express();

@@ -3,7 +3,7 @@ import Redis from "ioredis";
 import "./env.config.js";
 
 const redisClient = new Redis({
-	host: process.env.REDIS_HOST || "redis",
+	host: process.env.REDIS_HOST || "127.0.0.1",
 	port: process.env.REDIS_PORT || 6379,
 
 	// The actual fix for the hang: without this, commands queue and wait

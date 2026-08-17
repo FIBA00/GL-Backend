@@ -1,7 +1,15 @@
 FROM node:22-alpine
+
 WORKDIR /app
-COPY package*.json ./
-RUN npm cache clean --force && npm ci
-COPY . . 
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+RUN pnpm install --frozen-lockfile --prod
+
+COPY . .
+
 EXPOSE 5000
-CMD ["npm", "run", "run"]
+
+CMD ["pnpm", "run", "run"]
