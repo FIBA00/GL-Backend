@@ -1,6 +1,6 @@
-allowBuilds:
-  bcrypt: true
-  mongodb-memory-server: true
+packages:
+    - "packages/*"
+    - "src/*"
 
-onlyBuiltDependencies:
-  - bcrypt
+allowBuilds:
+    - "bcrypt"
